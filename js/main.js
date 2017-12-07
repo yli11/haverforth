@@ -27,7 +27,7 @@ function print(terminal, msg) {
  */
 function renderStack(stack) {
     $("#thestack").empty();
-    stack.reverse().forEach(function(element) {
+    stack.slice().reverse().forEach(function(element) {
         $("#thestack").append("<tr><td>" + element + "</td></tr>");
     });
 };
@@ -45,7 +45,7 @@ function process(stack, input, terminal) {
         print(terminal,"pushing " + Number(input));
         stack.push(Number(input));
     } else if (input === ".s") {
-        print(terminal, " <" + stack.length + "> " + stack.reverse().join(" "));
+        print(terminal, " <" + stack.length + "> " + stack.slice().join(" "));
     } else if (input === "+") {
         var first = stack.pop();
         var second = stack.pop();
@@ -75,8 +75,10 @@ $(document).ready(function() {
     // represents the terminal to the end of it.
     $("#terminal").append(terminal.html);
 
+    var stack = [];
+
     print(terminal, "Welcome to HaverForth! v0.1");
     print(terminal, "As you type, the stack (on the right) will be kept in sync");
 
-    runRepl(terminal, []);
+    runRepl(terminal, stack);
 });
