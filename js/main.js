@@ -45,7 +45,7 @@ function process(stack, input, terminal) {
         print(terminal,"pushing " + Number(input));
         stack.push(Number(input));
     } else if (input === ".s") {
-        print(terminal, " <" + stack.length + "> " + stack.join(" "));
+        print(terminal, " <" + stack.length + "> " + stack.reverse().join(" "));
     } else if (input === "+") {
         var first = stack.pop();
         var second = stack.pop();
