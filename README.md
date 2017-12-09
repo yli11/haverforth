@@ -51,7 +51,6 @@ var resetButton = $("#reset"); // resetButton now references
 3. Implement the follow functions on stacks in JavaScript:
 
     - Standard arithmetic operations: `+`, `-`, `*`, and `/`
-    - `sub`
     - `nip`
     - `swap`
     - `over`
