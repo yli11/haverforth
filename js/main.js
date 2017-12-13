@@ -1,12 +1,143 @@
 // See the following on using objects as key/value dictionaries
 // https://stackoverflow.com/questions/1208222/how-to-do-associative-array-hashing-in-javascript
-var words = {};
+var words = {"+": add, "-": sub, "*": mult, "/": divide, "nip": nip, "swap": swap, "over": over, "<": lt, "=": eq, ">": gt};
+var userDefined = {};
+
+function add(stack){
+    if (stack.length < 2) {
+        alert("Can't perform add because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        stack.push(first+second);
+    }
+}
+
+function sub(stack){
+    if (stack.length < 2) {
+        alert("Can't perform sub because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        stack.push(second - first);
+    }
+}
+
+function mult(stack){
+    if (stack.length < 2) {
+        alert("Can't perform mult because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        stack.push(second * first);
+    }
+}
+
+function divide(stack){
+    if (stack.length < 2) {
+        alert("Can't perform divide because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        stack.push(second / first);
+    }
+}
+
+function nip(stack){
+    if (stack.length < 2) {
+        alert("Can't perform nip because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        stack.push(first);
+    }
+}
+
+function swap(stack){
+    if (stack.length < 2) {
+        alert("Can't perform swap because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        stack.push(first);
+        stack.push(second);
+    }
+}
+
+function over(stack){
+    if (stack.length < 2) {
+        alert("Can't perform over because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        stack.push(second);
+        stack.push(first);
+        stack.push(second);
+    }
+}
+
+function gt(stack){
+    if (stack.length < 2) {
+        alert("Can't perform comparison because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        if (second > first){
+            stack.push(-1);
+        } 
+        else {
+            stack.push(0);
+        }
+    }
+}
+
+function lt(stack){
+    if (stack.length < 2) {
+        alert("Can't perform comparison because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        if (second < first){
+            stack.push(-1);
+        } 
+        else {
+            stack.push(0);
+        }
+    }
+}
+
+function eq(stack){
+    if (stack.length < 2) {
+        alert("Can't perform comparison because stack size is too small.")
+    }
+    else {
+        var first = stack.pop();
+        var second = stack.pop();
+        if (second == first){
+            stack.push(-1);
+        } 
+        else {
+            stack.push(0);
+        }
+    }
+}
 
 /** 
- * Your thoughtful comment here.
+ * set the length of the array to 0 so that the stack will be empty.
+ * @param {Array[Number]} The stack to reset
  */
 function emptyStack(stack) {
-    // ...
+    stack.length = 0;
+    renderStack(stack);
 }
 
 /**
@@ -39,24 +170,35 @@ function renderStack(stack) {
  * @param {string} input - The string the user typed
  * @param {Terminal} terminal - The terminal object
  */
-function process(stack, input, terminal) {
+function process(stack, allInputs, terminal) {
+    var ops = allInputs.trim().split(/ +/);
     // The user typed a number
-    if (!(isNaN(Number(input)))) {
-        print(terminal,"pushing " + Number(input));
-        stack.push(Number(input));
-    } else if (input === ".s") {
-        print(terminal, " <" + stack.length + "> " + stack.slice().join(" "));
-    } else if (input === "+") {
-        var first = stack.pop();
-        var second = stack.pop();
-        stack.push(first+second);
-    } else {
-        print(terminal, ":-( Unrecognized input");
+    if (ops[0] == ":") {
+        userDefined[ops[1]] = ops.slice(2, -1).join(' ');
     }
-    renderStack(stack);
+    else {
+        ops.forEach(function(input) {
+            if (!(isNaN(Number(input)))) {
+                print(terminal,"pushing " + Number(input));
+                stack.push(Number(input));
+            } else if (input === ".s") {
+                print(terminal, " <" + stack.length + "> " + stack.slice().join(" "));
+            } else if (input in words) {
+                words[input](stack);
+            } else if (input in userDefined) {
+                process(stack, userDefined[input], terminal);
+            } else {
+                print(terminal, ":-( Unrecognized input");
+            }
+            renderStack(stack);
+        });
+    }
 };
 
-function runRepl(terminal, stack) {
+function runRepl(terminal, stack) { 
+    $("#reset").click(function() {
+        emptyStack(stack);
+    });
     terminal.input("Type a forth command:", function(line) {
         print(terminal, "User typed in: " + line);
         process(stack, line, terminal);
@@ -81,4 +223,5 @@ $(document).ready(function() {
     print(terminal, "As you type, the stack (on the right) will be kept in sync");
 
     runRepl(terminal, stack);
+
 });
