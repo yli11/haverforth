@@ -3,9 +3,9 @@
 var words = {"+": add, "-": sub, "*": mult, "/": divide, "nip": nip, "swap": swap, "over": over, "<": lt, "=": eq, ">": gt};
 var userDefined = {};
 
-function add(stack){
+function add(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform add because stack size is too small.")
+        print(terminal, "Can't perform add because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -14,9 +14,9 @@ function add(stack){
     }
 }
 
-function sub(stack){
+function sub(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform sub because stack size is too small.")
+        print(terminal, "Can't perform sub because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -25,9 +25,9 @@ function sub(stack){
     }
 }
 
-function mult(stack){
+function mult(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform mult because stack size is too small.")
+        print(terminal, "Can't perform mult because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -36,9 +36,9 @@ function mult(stack){
     }
 }
 
-function divide(stack){
+function divide(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform divide because stack size is too small.")
+        print(terminal, "Can't perform divide because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -47,9 +47,9 @@ function divide(stack){
     }
 }
 
-function nip(stack){
+function nip(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform nip because stack size is too small.")
+        print(terminal, "Can't perform nip because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -58,9 +58,9 @@ function nip(stack){
     }
 }
 
-function swap(stack){
+function swap(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform swap because stack size is too small.")
+        print(terminal, "Can't perform swap because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -70,9 +70,9 @@ function swap(stack){
     }
 }
 
-function over(stack){
+function over(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform over because stack size is too small.")
+        print(terminal, "Can't perform over because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -83,9 +83,9 @@ function over(stack){
     }
 }
 
-function gt(stack){
+function gt(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform comparison because stack size is too small.")
+        print(terminal, "Can't perform comparison because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -99,9 +99,9 @@ function gt(stack){
     }
 }
 
-function lt(stack){
+function lt(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform comparison because stack size is too small.")
+        print(terminal, "Can't perform comparison because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -115,9 +115,9 @@ function lt(stack){
     }
 }
 
-function eq(stack){
+function eq(stack, terminal){
     if (stack.length < 2) {
-        alert("Can't perform comparison because stack size is too small.")
+        print(terminal, "Can't perform comparison because stack size is too small.")
     }
     else {
         var first = stack.pop();
@@ -184,7 +184,7 @@ function process(stack, allInputs, terminal) {
             } else if (input === ".s") {
                 print(terminal, " <" + stack.length + "> " + stack.slice().join(" "));
             } else if (input in words) {
-                words[input](stack);
+                words[input](stack, terminal);
             } else if (input in userDefined) {
                 process(stack, userDefined[input], terminal);
             } else {
@@ -196,9 +196,7 @@ function process(stack, allInputs, terminal) {
 };
 
 function runRepl(terminal, stack) { 
-    $("#reset").click(function() {
-        emptyStack(stack);
-    });
+
     terminal.input("Type a forth command:", function(line) {
         print(terminal, "User typed in: " + line);
         process(stack, line, terminal);
@@ -219,6 +217,9 @@ $(document).ready(function() {
 
     var stack = [];
 
+    $("#reset").click(function() {
+        emptyStack(stack);
+    });
     print(terminal, "Welcome to HaverForth! v0.1");
     print(terminal, "As you type, the stack (on the right) will be kept in sync");
 
